@@ -64,7 +64,6 @@ func (h *SQSHandler) Poller(msgs chan *sqs.Message) {
 // Deleter deletes each sqs.Message sent to its channel
 func (h *SQSHandler) Deleter(msgs chan *sqs.Message) {
 	for msg := range msgs {
-		log.Println("Deleting the message")
 		_, err := h.client.DeleteMessage(
 			&sqs.DeleteMessageInput{
 				QueueURL:      aws.String(h.QueueURL),
