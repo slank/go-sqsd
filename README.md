@@ -1,6 +1,6 @@
 # go-sqsd
 
-Go-sqsd is a clone of the sqsd found on Worker applications in AWS's Elastic Beanstalk PaaS. Given a queue URL and an HTTP endpoint URL, it polls the queue for messages and POSTs them to the endpoint. If the endpoint responds with a 200 response, the messasge is deleted.
+Go-sqsd is a clone of the sqsd found on Worker applications in AWS's Elastic Beanstalk PaaS. Given a queue URL and an HTTP endpoint URL, it polls the queue for messages and POSTs them to the endpoint. If the endpoint responds with a 200 response, the message is deleted.
 
 ## Build/Install
 
