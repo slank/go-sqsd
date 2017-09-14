@@ -35,7 +35,7 @@ func NewSQSHandler(queueURL string) *SQSHandler {
 // channel provided.
 func (h *SQSHandler) Poller(msgs chan *sqs.Message) {
 	params := &sqs.ReceiveMessageInput{
-		QueueURL:              aws.String(h.QueueURL),
+		QueueUrl:              aws.String(h.QueueURL),
 		AttributeNames:        []*string{aws.String("All")},
 		MaxNumberOfMessages:   aws.Int64(h.MessagesPerRequest),
 		MessageAttributeNames: []*string{aws.String("All")},
@@ -66,7 +66,7 @@ func (h *SQSHandler) Deleter(msgs chan *sqs.Message) {
 	for msg := range msgs {
 		_, err := h.client.DeleteMessage(
 			&sqs.DeleteMessageInput{
-				QueueURL:      aws.String(h.QueueURL),
+				QueueUrl:      aws.String(h.QueueURL),
 				ReceiptHandle: aws.String(*msg.ReceiptHandle),
 			},
 		)
