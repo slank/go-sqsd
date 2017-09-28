@@ -6,6 +6,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
+	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sqs"
 )
 
@@ -22,12 +23,16 @@ type SQSHandler struct {
 
 // NewSQSHandler creates an SQSHandler with default values.
 func NewSQSHandler(queueURL string) *SQSHandler {
+	sess := session.Must(session.NewSessionWithOptions(session.Options {
+	        SharedConfigState: session.SharedConfigEnable,
+        }))
+
 	return &SQSHandler{
 		QueueURL:           queueURL,
 		MessagesPerRequest: 10,
 		PollWaitSeconds:    20,
 		SleepDuration:      10 * time.Second,
-		client:             sqs.New(nil),
+		client:             sqs.New(sess),
 	}
 }
 
@@ -35,7 +40,7 @@ func NewSQSHandler(queueURL string) *SQSHandler {
 // channel provided.
 func (h *SQSHandler) Poller(msgs chan *sqs.Message) {
 	params := &sqs.ReceiveMessageInput{
-		QueueURL:              aws.String(h.QueueURL),
+		QueueUrl:              aws.String(h.QueueURL),
 		AttributeNames:        []*string{aws.String("All")},
 		MaxNumberOfMessages:   aws.Int64(h.MessagesPerRequest),
 		MessageAttributeNames: []*string{aws.String("All")},
@@ -66,7 +71,7 @@ func (h *SQSHandler) Deleter(msgs chan *sqs.Message) {
 	for msg := range msgs {
 		_, err := h.client.DeleteMessage(
 			&sqs.DeleteMessageInput{
-				QueueURL:      aws.String(h.QueueURL),
+				QueueUrl:      aws.String(h.QueueURL),
 				ReceiptHandle: aws.String(*msg.ReceiptHandle),
 			},
 		)
