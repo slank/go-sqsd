@@ -6,6 +6,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
+	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sqs"
 )
 
@@ -22,12 +23,16 @@ type SQSHandler struct {
 
 // NewSQSHandler creates an SQSHandler with default values.
 func NewSQSHandler(queueURL string) *SQSHandler {
+	sess := session.Must(session.NewSessionWithOptions(session.Options {
+	        SharedConfigState: session.SharedConfigEnable,
+        }))
+
 	return &SQSHandler{
 		QueueURL:           queueURL,
 		MessagesPerRequest: 10,
 		PollWaitSeconds:    20,
 		SleepDuration:      10 * time.Second,
-		client:             sqs.New(nil),
+		client:             sqs.New(sess),
 	}
 }
 
